@@ -1,0 +1,138 @@
+<html>
+
+<body>
+   <form action="http://localhost:5000/studentApply" method="post">
+      <h3>Personal Information</h3>
+      <p>firstName:</p>
+      <p><input type="text" name="firstName" /></p>
+      <p>middleName:</p>
+      <p><input type="text" name="middleName" /></p>
+      <p>lastName:</p>
+      <p><input type="text" name="lastName" /></p>
+      <p>email:</p>
+      <p><input type="text" name="email" /></p>
+      <p>streetAddress:</p>
+      <p><input type="text" name="streetAddress" /></p>
+      <p>city:</p>
+      <p><input type="text" name="city" /></p>
+      <p>state:</p>
+      <p><input type="text" name="state" /></p>
+      <p>zipcode:</p>
+      <p><input type="text" name="zipcode" /></p>
+      <p>homePhone:</p>
+      <p><input type="text" name="homePhone" /></p>
+      <p>workPhone:</p>
+      <p><input type="text" name="workPhone" /></p>
+      <p>mobilePhone:</p>
+      <p><input type="text" name="mobilePhone" /></p>
+      <hr>
+      <h3>Academic Information</h3>
+      <p>Program:</p>
+      <p><select name="program">
+         <option value="MS">Masters</option>
+         <option value="MSE">Masters of Engineering</option>
+      </select></p>
+      <hr>
+      <p>GRE:</p>
+      <p><input type="text" name="greScore" /></p>
+      <p>Prior Work Experience:</p>
+      <p><textarea name="priorWorkExperience" rows="2" cols="50"></textarea></p>
+      <p>Admission Term:</p>
+      <p><select name="admissionTerm">
+         <option value="W2023">W2024</option>
+         <option value="S2022">S2023</option>
+         <option value="F2022">F2023</option>
+      </select></p>
+      <p>Area of Interest:</p>
+      <p><input type="text" name="areaOfInterest" /></p>
+      <hr>
+      <h3>Prior Degrees</h3>
+      <h4>Prior Bachellor Degree</h4>
+      <p><input type="checkbox" id="degree1" name="degree1" value="Bachelor">
+         <label for="degree1"> I have a Bachellor Degree</label><br>
+      <p>graduationYear:</p>
+      <p><input type="text" name="graduationYear1" /></p>
+      <p>gpa:</p>
+      <p><input type="text" name="gpa1" /></p>
+      <p>collegeName:</p>
+      <p><input type="text" name="collegeName1" /></p>
+      </p>
+      <hr>
+      <h4>Prior Masters Degree</h4>
+      <p><input type="checkbox" id="degree2" name="degree2" value="Master">
+         <label for="degree2"> I have a Masters Degree</label><br>
+      <p>graduationYear:</p>
+      <p><input type="text" name="graduationYear2" /></p>
+      <p>gpa:</p>
+      <p><input type="text" name="gpa2" /></p>
+      <p>collegeName:</p>
+      <p><input type="text" name="collegeName2" /></p>
+      </p>
+      <hr>
+      <h3>Recommendation Letters</h3>
+      <h4>Recommendation Letter 1</h4>
+      <p>Title:</p>
+      <p><select name="title1">
+         <option value="Mr">Mr</option>
+         <option value="Ms">Ms</option>
+         <option value="Dr">Dr</option>
+         <option value="Professor">Professor</option>
+      </select></p>
+      <p>name:</p>
+      <p><input type="text" name="name1" /></p>
+      <p>email:</p>
+      <p><input type="text" name="email1" /></p>
+      <p>Affiliation:</p>
+      <p><select name="affiliation1">
+         <option value="Professor">Professor</option>
+         <option value="Coworker">Coworker</option>
+         <option value="Relative">Relative</option>
+         <option value="Friend">Friend</option>
+      </select></p>
+      <hr>
+      <h4>Recommendation Letter 2</h4>
+      <p>Title:</p>
+      <p><select name="title2">
+         <option value="Mr">Mr</option>
+         <option value="Ms">Ms</option>
+         <option value="Dr">Dr</option>
+         <option value="Professor">Professor</option>
+      </select></p>
+      <p>name:</p>
+      <p><input type="text" name="name2" /></p>
+      <p>email:</p>
+      <p><input type="text" name="email2" /></p>
+      <p>Affiliation:</p>
+      <p><select name="affiliation2">
+         <option value="Professor">Professor</option>
+         <option value="Coworker">Coworker</option>
+         <option value="Relative">Relative</option>
+         <option value="Friend">Friend</option>
+      </select></p>
+      <hr>
+      <h4>Recommendation Letter 3</h4>
+      <p>Title:</p>
+      <p><select name="title3">
+         <option value="Mr">Mr</option>
+         <option value="Ms">Ms</option>
+         <option value="Dr">Dr</option>
+         <option value="Professor">Professor</option>
+      </select></p>
+      <p>name:</p>
+      <p><input type="text" name="name3" /></p>
+      <p>email:</p>
+      <p><input type="text" name="email3" /></p>
+      <p>Affiliation:</p>
+      <p><select name="affiliation3">
+         <option value="Professor">Professor</option>
+         <option value="Coworker">Coworker</option>
+         <option value="Relative">Relative</option>
+         <option value="Friend">Friend</option>
+      </select></p>
+      <hr>
+
+      <p><input type="submit" value="submit" /></p>
+   </form>
+</body>
+
+</html>
