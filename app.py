@@ -1,7 +1,6 @@
 from mysql.connector import pooling
 from datetime import datetime
-from flask import Flask, redirect, url_for, request
-from mysqlx import Error
+from flask import Flask, redirect, url_for, request, render_template
 import atexit
 
 app = Flask(__name__)
@@ -45,8 +44,38 @@ def dbConnect():
         return connection_object
 
 
-@app.route("/success/<studentID>")
-def success(studentID):
+############################################################################################
+#################################  FRONT END   #############################################
+############################################################################################
+
+
+@app.route("/")
+def home():
+    return render_template("home.html")
+
+
+############################################################################################
+
+
+@app.route("/prospectiveStudents")
+def prospectiveStudents():
+    res = render_template(
+        "prospectiveStudents/prospectiveStudents.html",
+        some="variables",
+        you="want",
+        toPass=["to", "your", "template"],
+    )
+    return res
+
+
+@app.route("/prospectiveStudents/application")
+def prospectiveStudentsApplication():
+    res = render_template("prospectiveStudents/admissionApplication.html")
+    return res
+
+
+@app.route("/prospectiveStudents/success/<studentID>")
+def prospectiveStudentsApplicationSubmitted(studentID):
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM person WHERE userId =%s" % studentID)
@@ -54,43 +83,130 @@ def success(studentID):
     firstName = myresult[0][1]
     lastName = myresult[0][3]
 
-    return "Welcome %s %s your Student ID is  %s" % (firstName, lastName, studentID)
+    res = render_template(
+        "prospectiveStudents/applicationSubmitted.html",
+        message="Welcome %s %s your Student ID is  %s"
+        % (firstName, lastName, studentID),
+    )
+    return res
 
-@app.route("/applicationStatus/<password>")
+
+@app.route("/prospectiveStudents/checkStatus")
+def prospectiveStudentsStatus():
+    res = render_template("prospectiveStudents/checkApplicantStatus.html")
+    return res
+
+@app.route("/prospectiveStudents/accepted")
+def prospectiveStudentAccepted():
+    res = render_template("prospectiveStudents/admissionAccepted.html")
+    return res    
+
+
+@app.route("/prospectiveStudents/applicationStatus/<password>")
 def applicationStatus(password):
     mydb = dbConnect()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT applicationStatus FROM application WHERE Applicant_User_userId =%s" % password)
+    mycursor.execute(
+        "SELECT applicationStatus FROM application WHERE Applicant_User_userId =%s"
+        % password
+    )
     myresult = mycursor.fetchall()
-    status = myresult[0]
+    status = myresult[0][0]
 
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT applicationStatus FROM application WHERE Applicant_User_userId =%s" % password)
-    myresult = mycursor.fetchall()
-    status = myresult[0]
+    print(status)
 
-    mycursor.execute("SELECT COUNT(*) FROM recomendationletter WHERE Application_idApplication =%s" % password)
+    mycursor.execute(
+        "SELECT COUNT(*) FROM recomendationletter WHERE Application_idApplication =%s"
+        % password
+    )
     myresult = mycursor.fetchall()
     count = myresult[0][0]
 
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT priorTranscript FROM application WHERE Applicant_User_userId =%s" % password)
+    mycursor.execute(
+        "SELECT priorTranscript FROM application WHERE Applicant_User_userId =%s"
+        % password
+    )
     myresult = mycursor.fetchall()
     transcript = myresult[0][0]
 
     print(transcript)
 
-    if count == 0:
-        return "Your Status is '%s'" % ('Application Incomplete – recommendation letters materials missing')
-    elif not transcript:
-        return "Your Status is '%s'" % ('Application Incomplete – transcript materials missing')
-    else :
-        return "Your Status is '%s'" % (status)
+    statusMessage = ""
 
-        
-    
+    if status == "Accepted":
+        return redirect(url_for('prospectiveStudentAccepted'))
+    elif status == "Rejected":
+        statusMessage = "Your Status is '%s'" % (
+            "Your application for admission has been denied."
+        )
+    elif count == 0:
+        statusMessage = "Your Status is '%s'" % (
+            "Application Incomplete – recommendation letters materials missing"
+        )
+    elif not transcript:
+        statusMessage = "Your Status is '%s'" % (
+            "Application Incomplete – transcript materials missing"
+        )
+    else:
+        statusMessage = "Application Complete and Under Review/No Decision Yet"
+
+    res = render_template(
+        "prospectiveStudents/applicationSubmitted.html",
+        message=statusMessage,
+    )
+    return res
+
+
+############################################################################################
+
+
+@app.route("/students")
+def students():
+    res = render_template(
+        "students/students.html",
+        some="variables",
+        you="want",
+        toPass=["to", "your", "template"],
+    )
+    return res
+
+
+############################################################################################
+
+
+@app.route("/staff")
+def staff():
+    res = render_template(
+        "staff/staff.html",
+        some="variables",
+        you="want",
+        toPass=["to", "your", "template"],
+    )
+    return res
+
+
+############################################################################################
+
+
+@app.route("/alumni")
+def alumni():
+    res = render_template(
+        "alumni/alumni.html",
+        some="variables",
+        you="want",
+        toPass=["to", "your", "template"],
+    )
+    return res
+
+
+############################################################################################
+#################################  API   ###################################################
+############################################################################################
+
+
 @app.route("/checkAdmissionApplication", methods=["POST"])
-def checkApplicationStatus():
+def checkApplicationStatusAPI():
     email = request.form["email"]
     password = request.form["password"]
 
@@ -98,7 +214,7 @@ def checkApplicationStatus():
 
 
 @app.route("/studentApply", methods=["POST"])
-def studentApply():
+def studentApplyAPI():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     firstName = request.form["firstName"]
@@ -114,21 +230,25 @@ def studentApply():
     mobilePhone = request.form["mobilePhone"]
 
     program = request.form["program"]
-    greScore = request.form["greScore"]
+    greScoreVerbal = request.form["greScoreVerbal"]
     priorWorkExperience = request.form["priorWorkExperience"]
     admissionTerm = request.form["admissionTerm"]
     areaOfInterest = request.form["areaOfInterest"]
 
-    if request.form.get('degree1'):
+    if request.form.get("degree1"):
         degree1 = request.form["degree1"]
         print(degree1)
+    else:
+        degree1 = None
     graduationYear1 = request.form["graduationYear1"]
     gpa1 = request.form["gpa1"]
     collegeName1 = request.form["collegeName1"]
 
-    if request.form.get('degree2'):
+    if request.form.get("degree2"):
         degree2 = request.form["degree2"]
         print(degree2)
+    else:
+        degree2 = None
     graduationYear2 = request.form["graduationYear2"]
     gpa2 = request.form["gpa2"]
     collegeName2 = request.form["collegeName2"]
@@ -173,11 +293,11 @@ def studentApply():
 
     mycursor = mydb.cursor()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    sql = "INSERT INTO application (Applicant_User_userId, program, greScore, priorWorkExperience, admissionTerm, dateReceived, areaOfInterest) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO application (Applicant_User_userId, program, greScoreVerbal, priorWorkExperience, admissionTerm, dateReceived, areaOfInterest) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     val = (
         userID,
         program,
-        greScore,
+        greScoreVerbal,
         priorWorkExperience,
         admissionTerm,
         timestamp,
@@ -211,7 +331,7 @@ def studentApply():
             title2,
         )
         mycursor.execute(sql, val)
-        mydb.commit()       
+        mydb.commit()
 
     if name3:
         sql = "INSERT INTO recomendationletter (Application_idApplication, Application_Applicant_User_userId, name, affiliation, email, title) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -224,7 +344,7 @@ def studentApply():
             title3,
         )
         mycursor.execute(sql, val)
-        mydb.commit()   
+        mydb.commit()
 
     if degree1:
         sql = "INSERT INTO priordegree (Application_idApplication, Application_Applicant_User_userId, collegeName, graduationYear, gpa, degree) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -237,7 +357,7 @@ def studentApply():
             degree1,
         )
         mycursor.execute(sql, val)
-        mydb.commit()   
+        mydb.commit()
 
     if degree2:
         sql = "INSERT INTO priordegree (Application_idApplication, Application_Applicant_User_userId, collegeName, graduationYear, gpa, degree) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -250,7 +370,7 @@ def studentApply():
             degree2,
         )
         mycursor.execute(sql, val)
-        mydb.commit()           
+        mydb.commit()
 
     print(mycursor.rowcount, "record inserted.")
 
@@ -262,7 +382,9 @@ def studentApply():
 
     mydb.close()
 
-    return redirect(url_for("success", studentID=userID))
+    return redirect(
+        url_for("prospectiveStudentsApplicationSubmitted", studentID=userID)
+    )
 
 
 if __name__ == "__main__":

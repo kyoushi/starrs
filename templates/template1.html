@@ -1,0 +1,18 @@
+<html>
+<!--head etc-->
+
+<body>
+  <header>
+    <a href="https://www.w3schools.com">Home</a> | <a href="https://www.w3schools.com">Prospective Students</a> | <a href="https://www.w3schools.com">Students</a> | <a href="https://www.w3schools.com">Staff</a> | <a href="https://www.w3schools.com">Alumni</a>
+  </header>
+  <br>
+  <br>
+  <div>{{ you }}</div>
+  <div>{{ some }}<span>?</span></div>
+  <!-- you can iterate on a list to add many items -->
+  {% for v in toPass %}
+  <div>{{ v }}</div>
+  {% endfor %}
+</body>
+
+</html>
