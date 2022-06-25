@@ -2,7 +2,14 @@
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> | <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
     <h1>Student Application Status</h1>
     <div><div>Congratulations you have been admitted. The formal letter of acceptance will be mailed.</div></div>
-    <form action="http://localhost:5000" method="get">
+    <form action="../prospectiveStudents/accept" method="POST">
+        <input type="text" value={{id}} name="idApplication" hidden>
+        <input type="text" value={{userId}} name="idUser" hidden>
+        {% if status == 0 %}
         <p><input type="submit" value="Accept Admission" /></p>
+        {% else %}
+        <p><input type="submit" value="Admission Accepted" disabled/></p>
+        {% endif %}
+        
      </form>
  </body>

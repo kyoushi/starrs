@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Courses - Degree</h1>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Course Number</th>
+                <th>Title</th>
+                <th>Credits</th>
+                <th>Action</th>
+            </tr>
+            {% for n in degreeCourses %}
+            <tr>
+                <th>{{n[0]}}</th>
+                <th>{{n[1]}}</th>
+                <th>{{n[2]}}</th>
+                {% if n[3] == None %}
+                <th><form action="../students/modifyDegreeCourses"  method="post">
+                    <input type="text" value={{studentId}} name="studentId" hidden>
+                    <input type="text" value={{n[0]}} name="courseNumber" hidden>
+                    <input type="text" value="Add" name="action" hidden>
+                    <input type="submit" value="Add" />
+                </form></th>
+                {% else %}
+                <th><form action="../students/modifyDegreeCourses"  method="post">
+                    <input type="text" value={{studentId}} name="studentId" hidden>
+                    <input type="text" value={{n[0]}} name="courseNumber" hidden>
+                    <input type="text" value="Remove" name="action" hidden>
+                    <input type="submit" value="Remove" />
+                </form></th>
+                {% endif %} 
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <p>You have {{totalCredits}}/30 Credits</p>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<html>
+<!--head etc-->
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Student Landing Page</h1>
+    <form action="../degreeCourses" method="post">
+        <input type="text" value={{password}} name="studentId" hidden>
+        <input type="submit" value="Select Degree Required Courses" />
+    </form>
+    <form action="../enrollCourses" method="post">
+        <input type="text" value={{password}} name="studentId" hidden>
+        <input type="submit" value="Enroll into Courses" />
+    </form>
+    <form action="../viewGrades" method="post">
+        <input type="text" value={{password}} name="studentId" hidden>
+        <input type="submit" value="View Class List and Grades" />
+    </form>
+    <form action="./staff/formallyAdmitApplicants">
+        <input type="text" value={{password}} name="studentId" hidden>
+        <input type="submit" value="Apply for graduation" />
+    </form>
+</body>
+
+</html>

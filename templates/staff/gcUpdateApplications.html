@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+        }
+        </style>
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Applications - Update</h1>
+    <div class="container">
+         <table>
+            <tr>
+                <th>User ID</th>
+                <th>Application ID</th>
+                <th>Date Received</th>
+                <th>Transcript Received</th>
+                <th>Application Status</th>
+                <th>Action</th>
+              </tr>
+            {% for n in my_list %}
+            <tr>
+                <th>{{n[0]}}</th>
+                <th>{{n[1]}}</th>
+                <th>{{n[2]}}</th>
+                {% if n[3] == 1 %}
+                <th>Received</th>
+                {% else %}
+                <th>Not Received</th>
+                {% endif %}
+                {% if n[4] == None %}
+                <th>Incomplete</th>
+                {% else %}
+                <th>{{n[4]}}</th>
+                {% endif %}
+                
+                <th><a href="/staff/gcUpdateApplicationForm/{{n[1]}}">Update</a></th>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

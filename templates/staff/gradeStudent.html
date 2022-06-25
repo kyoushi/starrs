@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Grade Student</h1>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+            <tr>
+                <th>{{courses[0][0]}}</th>
+                <th>{{courses[0][1]}}</th>
+                <th>{{courses[0][2]}}</th>
+            </tr>
+        </table>
+        <hr>
+        <table>
+            <tr>
+                <th>Section Number</th>
+                <th>Course Number</th>
+                <th>Instructor</th>
+                <th>Grade</th>
+            </tr>
+            {% for n in courses %}
+            <tr>
+                <th>{{n[3]}}</th>
+                <th>{{n[4]}}</th>
+                <th>{{n[5]}} {{n[6]}}</th>
+                <th>
+                    <form action="../staff/grade" method="post">
+                    <select name="grade">
+                        {% if n[7] == 'In Progress' %}
+                        <option value="In Progress" selected></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="F">F</option>
+                        {% elif n[7] == 'A' %}
+                        <option value="In Progress"></option>
+                        <option value="A" selected>A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="F">F</option>
+                        {% elif n[7] == 'B' %}
+                        <option value="In Progress"></option>
+                        <option value="A">A</option>
+                        <option value="B" selected>B</option>
+                        <option value="C">C</option>
+                        <option value="F">F</option>
+                        {% elif n[7] == 'C' %}
+                        <option value="In Progress"></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C" selected>C</option>
+                        <option value="F">F</option>
+                        {% elif n[7] == 'F' %}
+                        <option value="In Progress"></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="F" selected>F</option>
+                        {% endif %}
+                    </select>
+                    <input type="text" value={{n[0]}} name="studentId" hidden>
+                    <input type="text" value={{n[3]}} name="sectionNumber" hidden>
+                    <input type="submit" value="Submit" />
+                    </form>
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

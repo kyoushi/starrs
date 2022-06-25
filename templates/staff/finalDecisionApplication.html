@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <form action="../../staff/finalDecisionApplication" method="post">
+        <h1><input type="text" value={{application[0][0]}} name="idApplication" hidden>Review Application
+            {{application[0][0]}}
+        </h1>
+
+        <p>
+            <label for="finalDecision">Final Descision:</label>
+            <select name="finalDecision">
+                <option value="empty"></option>
+                <option value="reject">Reject</option>
+                <option value="admit">Admit</option>
+                <option value="admitWithAid">Admit With Aid</option>
+            </select>
+        </p>
+        <input class="SubmitButton" type="submit" value="Submit" /></p>
+        <hr>
+        <div>
+            <h2>Reviewer Recommendations</h2>
+            <table>
+                <tr>
+                    <th>Reviewer ID</th>
+                    <th>Recommendation</th>
+                    <th>Commments</th>
+                    <th>Recommended Advisor</th>
+                </tr>
+                {% for n in applicationrecommendation %}
+                <tr>
+                    <th>{{n[5]}}</th>
+                    <th>{{n[1]}}</th>
+                    <th><textarea name="recommendationComments" rows="4" cols="50" readonly>{{n[2]}}</textarea></th>
+                    <th>{{n[6]}}</th>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+            <hr>
+            <h2>Recommendation Letters</h2>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Afiliation</th>
+                    <th>Recommendation Score</th>
+                </tr>
+                {% for n in recommendations %}
+                <tr>
+                    <th>{{n[4]}}</th>
+                    <th>{{n[1]}}</th>
+                    <th>{{n[3]}}</th>
+                    <th>{{n[2]}}</th>
+                    <th>{{n[5]}}</th>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+            <hr>
+            <h2>Degrees</h2>
+            <table>
+                <tr>
+                    <th>Degree</th>
+                    <th>College Name</th>
+                    <th>Graduation Year</th>
+                    <th>GPA</th>
+                </tr>
+                {% for n in priordegree %}
+                <tr>
+                    <th>{{n[5]}}</th>
+                    <th>{{n[2]}}</th>
+                    <th>{{n[3]}}</th>
+                    <th>{{n[4]}}</th>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+            <hr>
+            <h2>Personal Information</h2>
+            <table>
+                <tr>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Home Phone</th>
+                    <th>Work Phone</th>
+                    <th>Mobile Phone</th>
+                </tr>
+                {% for n in person %}
+                <tr>
+                    <th><input type="text" value={{n[0]}} name="personId" hidden>{{n[1]}}</th>
+                    <th>{{n[2]}}</th>
+                    <th>{{n[3]}}</th>
+                    <th>{{n[4]}}</th>
+                    <th>{{n[5]}}, {{n[6]}}, {{n[7]}} {{n[8]}}</th>
+                    <th>{{n[9]}}</th>
+                    <th>{{n[10]}}</th>
+                    <th>{{n[11]}}</th>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+            <hr>
+            <h2>Application</h2>
+            <table>
+                <tr>
+                    <th>Admission Term</th>
+                    <th>GRE Score Verbal</th>
+                    <th>GRE Score Analytical</th>
+                    <th>GRE Score Quantitative</th>
+                    <th>Prior Work Experience</th>
+                    <th>Area Of Interest</th>
+                </tr>
+                {% for n in application %}
+                <tr>
+                    <th>{{n[2]}}</th>
+                    <th>{{n[4]}}</th>
+                    <th>{{n[5]}}</th>
+                    <th>{{n[6]}}</th>
+                    <th>{{n[7]}}</th>
+                    <th>{{n[8]}}</th>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+        </div>
+    </form>
+</body>
+
+</html>

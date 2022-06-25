@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <form action="../../staff/gcUpdateApplication" method="post">
+        <h1><input type="text" value={{idApplication}} name="idApplication" hidden>Review Application {{idApplication}}</h1>
+        <div class="container">
+            <label for="transcript">Transcript Received:</label>
+            <select name="transcript">
+                {% if received == '0' %}
+                <option value="received">Received</option>
+                <option value selected="notReceived">Not received</option>
+                {% else %}
+                <option value selected="received">Received</option>
+                <option value="notReceived">Not received</option>
+                {% endif %}
+            </select>
+        </div>
+        <hr>
+        <div>
+            <table>
+                <tr>
+                    <th>Recommendation ID</th>
+                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Afiliation</th>
+                    <th>Recommendation Score</th>
+                </tr>
+                {% for n in recommendations %}
+                <tr>
+                    <th><input type="text" value={{n[0]}} name="recommendation{{loop.index}}" hidden>{{n[0]}}</th>
+                    <th>{{n[4]}}</th>
+                    <th>{{n[1]}}</th>
+                    <th>{{n[3]}}</th>
+                    <th>{{n[2]}}</th>
+                    <th>
+                        <select name="score{{loop.index}}">
+                            {% if n[5] == 'top 5%' %}
+                            <option value="empty"></option>
+                            <option value="high" selected>top 5%</option>
+                            <option value="midHigh">85-94%</option>
+                            <option value="midLow">70-84%</option>
+                            <option value="low">below 70%</option>
+                            {% elif n[5] == '85-94%' %}
+                            <option value="empty"></option>
+                            <option value="high">top 5%</option>
+                            <option value="midHigh" selected>85-94%</option>
+                            <option value="midLow">70-84%</option>
+                            <option value="low">below 70%</option>
+                            {% elif n[5] == '70-84%' %}
+                            <option value="empty"></option>
+                            <option value="high">top 5%</option>
+                            <option value="midHigh">85-94%</option>
+                            <option value="midLow" selected>70-84%</option>
+                            <option value="low">below 70%</option>
+                            {% elif n[5] == 'below 70%' %}
+                            <option value="empty"></option>
+                            <option value="high">top 5%</option>
+                            <option value="midHigh">85-94%</option>
+                            <option value="midLow">70-84%</option>
+                            <option value="low" selected>below 70%</option>
+                            {% else %}
+                            <option value="empty" selected></option>
+                            <option value="high">top 5%</option>
+                            <option value="midHigh">85-94%</option>
+                            <option value="midLow">70-84%</option>
+                            <option value="low">below 70%</option>
+                            {% endif %}
+                        </select></th>
+                    <!-- <th><input type="text" value={{n[7]}} name="score{{loop.index}}"></th> -->
+                </tr>
+
+                {% endfor %}
+
+            </table>
+        </div>
+        <p><input class="SubmitButton" type="submit" value="Update" /></p>
+    </form>
+
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-3.0.0.min.js"></script> <!-- add jquery library-->
+</body>
+
+</html>

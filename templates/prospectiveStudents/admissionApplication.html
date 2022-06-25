@@ -2,7 +2,7 @@
 <body>
    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> | <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
    <h1>Student Application</h1>
-   <form action="http://localhost:5000/studentApply" method="post">
+   <form action="../studentApply" method="post">
       <h3>Personal Information</h3>
       <p>firstName:</p>
       <p><input type="text" name="firstName" /></p>
@@ -34,8 +34,12 @@
          <option value="MSE">Masters of Engineering</option>
       </select></p>
       <hr>
-      <p>GRE:</p>
+      <p>GRE Verbal:</p>
       <p><input type="text" name="greScoreVerbal" /></p>
+      <p>GRE Analytical :</p>
+      <p><input type="text" name="greScoreAnalytical" /></p>
+      <p>GRE Quantitative:</p>
+      <p><input type="text" name="greScoreQuantitative" /></p>
       <p>Prior Work Experience:</p>
       <p><textarea name="priorWorkExperience" rows="2" cols="50"></textarea></p>
       <p>Admission Term:</p>

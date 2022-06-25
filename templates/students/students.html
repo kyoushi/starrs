@@ -1,8 +1,43 @@
 <html>
 <!--head etc-->
-
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> | <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Students landing page</h1>
-</body>
+    <h1>Student Login</h1>
+    <p>For simplify - use Student ID as Password</p>
+    <form action="../students/studentLogin" method="post">
+       <p>email:</p>
+       <p><input type="text" name="email" /></p>
+       <p>password:</p>
+       <p><input type="text" name="password" /></p>
+       <p><input type="submit" value="submit" /></p>
+    </form>
+    <br>
+    <hr>
+    <p>Helper - Active students</p>
+    <table>
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+        </tr>
+        {% for n in activeStudents %}
+        <tr>
+            <th>{{n[0]}}</th>
+            <th>{{n[1]}} {{n[2]}}</th>
+            <th>{{n[3]}}</th>
+            <th>{{n[4]}}</th>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+ </body>
 </html>

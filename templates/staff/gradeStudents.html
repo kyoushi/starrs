@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Grade Students</h1>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Student Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Program</th>
+                <th>Action</th>
+            </tr>
+            {% for n in students %}
+            <tr>
+                <th>{{n[0]}}</th>
+                <th>{{n[1]}}</th>
+                <th>{{n[2]}}</th>
+                <th>{{n[3]}}</th>
+                <th><form action="../staff/gradeStudent"  method="post">
+                    <input type="text" value={{n[0]}} name="studentId" hidden>
+                    <input type="submit" value="Grade" />
+                </form></th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>
