@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <style>
-        table, th, td {
-          border: 1px solid black;
-        }
-        </style>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Applications - Update</h1>
+    <h1>Applications - Update</h1><a href={{previousUrl}}>Back</a>
     <div class="container">
-         <table>
+        <table>
             <tr>
                 <th>User ID</th>
                 <th>Application ID</th>
@@ -18,7 +21,7 @@
                 <th>Transcript Received</th>
                 <th>Application Status</th>
                 <th>Action</th>
-              </tr>
+            </tr>
             {% for n in my_list %}
             <tr>
                 <th>{{n[0]}}</th>
@@ -34,8 +37,19 @@
                 {% else %}
                 <th>{{n[4]}}</th>
                 {% endif %}
-                
-                <th><a href="/staff/gcUpdateApplicationForm/{{n[1]}}">Update</a></th>
+
+                <th>
+                    <form action="../staff/viewApplication" method="post">
+                        <input type="text" value={{n[0]}} name="studentId" hidden>
+                        <input type="submit" value="View Application" />
+                    </form>
+                    <form action="../staff/gcUpdateApplicationForm" method="post">
+                        <input type="text" value={{n[1]}} name="idApplication" hidden>
+                        <input type="text" value="{{previousUrl}}" name="previousUrl" hidden>
+                        <input type="submit" value="Update" />
+                    </form>
+                    <!-- <a href="/staff/gcUpdateApplicationForm/{{n[1]}}">Update</a> -->
+                </th>
             </tr>
 
             {% endfor %}

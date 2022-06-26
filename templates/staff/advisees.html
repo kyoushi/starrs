@@ -11,33 +11,29 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Applications - Formally Admit</h1>
+    <h1>Advisees</h1><a href={{previousUrl}}>Back</a>
+    
     <div class="container">
         <table>
             <tr>
-                <th>User ID</th>
-                <th>Application ID</th>
-                <th>Date Received</th>
-                <th>Application Decision</th>
+                <th>Student Id</th>
                 <th>Action</th>
             </tr>
-            {% for n in application %}
+            {% for n in advisees %}
             <tr>
-                <th>{{n[1]}}</th>
                 <th>{{n[0]}}</th>
-                <th>{{n[2]}}</th>
-                <th>{{n[12]}}</th>
                 <th>
                     <form action="../staff/viewApplication" method="post">
-                        <input type="text" value={{n[1]}} name="studentId" hidden>
+                        <input type="text" value={{n[0]}} name="studentId" hidden>
                         <input type="submit" value="View Application" />
                     </form>
-                    <a href="/staff/formallyAdmitApplicantsForm/{{n[0]}}">Admit</a>
+                    <form action="../students/viewGrades" method="post">
+                        <input type="text" value={{n[0]}} name="studentId" hidden>
+                        <input type="submit" value="View Class List and Grades" />
+                    </form>
                 </th>
             </tr>
-
             {% endfor %}
-
         </table>
     </div>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>

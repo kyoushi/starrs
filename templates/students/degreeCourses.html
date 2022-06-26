@@ -11,7 +11,7 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Courses - Degree</h1>
+    <h1>Courses - Degree</h1><a href={{previousUrl}}>Back</a>
     <div class="container">
         <table>
             <tr>
@@ -30,6 +30,7 @@
                     <input type="text" value={{studentId}} name="studentId" hidden>
                     <input type="text" value={{n[0]}} name="courseNumber" hidden>
                     <input type="text" value="Add" name="action" hidden>
+                    <input type="text" value="{{previousUrl}}" name="previousUrl" hidden>
                     <input type="submit" value="Add" />
                 </form></th>
                 {% else %}
@@ -37,6 +38,7 @@
                     <input type="text" value={{studentId}} name="studentId" hidden>
                     <input type="text" value={{n[0]}} name="courseNumber" hidden>
                     <input type="text" value="Remove" name="action" hidden>
+                    <input type="text" value="{{previousUrl}}" name="previousUrl" hidden>
                     <input type="submit" value="Remove" />
                 </form></th>
                 {% endif %} 

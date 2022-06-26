@@ -11,29 +11,23 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Applications - Formally Admit</h1>
+    <h1>Admitted Applicants</h1>
     <div class="container">
         <table>
             <tr>
                 <th>User ID</th>
                 <th>Application ID</th>
                 <th>Date Received</th>
-                <th>Application Decision</th>
-                <th>Action</th>
+                <th>Admission Term</th>
+                <th>Program</th>
             </tr>
-            {% for n in application %}
+            {% for n in my_list %}
             <tr>
-                <th>{{n[1]}}</th>
                 <th>{{n[0]}}</th>
+                <th>{{n[1]}}</th>
                 <th>{{n[2]}}</th>
-                <th>{{n[12]}}</th>
-                <th>
-                    <form action="../staff/viewApplication" method="post">
-                        <input type="text" value={{n[1]}} name="studentId" hidden>
-                        <input type="submit" value="View Application" />
-                    </form>
-                    <a href="/staff/formallyAdmitApplicantsForm/{{n[0]}}">Admit</a>
-                </th>
+                <th>{{n[3]}}</th>
+                <th>{{n[4]}}</th>
             </tr>
 
             {% endfor %}
