@@ -10,7 +10,7 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Staff Page {{previousUrl}}</h1>
+    <h1>Staff Page {{roles[0]}}</h1>
     {% if roles[0][4] == 'YES' %}
     <form action="../../staff/updateApplications">
         <input type="submit" value="GS - Update Applications" />
@@ -48,6 +48,7 @@
     </form>
     {% endif %}
     <div>
+        {% if roles[0][4] == 'YES' or roles[0][3] == 'YES'  %}
         <p>Search Applicant</p>
         <form action="../../staff/searchApplicant" method="post" >
             <label for="id">ID</label>
@@ -56,10 +57,12 @@
             <input type="text" name="lastname" size="10">
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Graduate Applicants</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Graduate Applicants</p>
         <form action="../../staff/graduateApplicants" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -76,10 +79,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>List Admitted Students</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>List Admitted Students</p>
         <form action="../../staff/admittedStudents" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -96,10 +101,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Statistics</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Statistics</p>
         <form action="../../staff/statistics" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -116,10 +123,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Graduating Students</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Graduating Students</p>
         <form action="../../staff/graduateApplicantsCleared" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -136,10 +145,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Alumni List</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Alumni List</p>
         <form action="../../staff/alumniList" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -156,10 +167,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Current Students</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Current Students</p>
         <form action="../../staff/currentStudents" method="post" >
             <label for="term">SemesterYear</label>
             <select name="term">
@@ -176,10 +189,12 @@
             </select>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>Change Current Advisor</p>
+        {% if roles[0][4] == 'YES' %}
+        <hr><p>Change Current Advisor</p>
         <form action="../../staff/changeAdvisor" method="post" >
             <label for="id">Student ID</label>
             <input type="text" name="studentID" size="5">
@@ -187,19 +202,22 @@
             <input type="text" name="advisorID" size="5">
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
+    
     <div>
-        <p>List of Courses and Grades</p>
+        {% if roles[0][4] == 'YES' or roles[0][2] == 'YES' %}
+        <hr><p>List of Courses and Grades</p>
         <form action="../../students/viewGrades" method="post" >
             <label for="id">Student ID</label>
             <input type="text" name="studentId" size="5">
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
-    <hr>
     <div>
-        <p>List of Advisees</p>
+        {% if roles[0][2] == 'YES' %}
+        <hr><p>List of Advisees</p>
         <form action="../../staff/viewAdvisees" method="post" >
             <label for="id">Advisor ID</label>
             <input type="text" name="password" value="{{password}}" hidden>
@@ -207,6 +225,7 @@
             <input type="text" name="userId" size="5">
             <input type="submit" value="Submit"/>
         </form>
+        {% endif %}
     </div>
 </body>
 
