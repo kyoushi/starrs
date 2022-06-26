@@ -1,6 +1,6 @@
 ﻿idApplication,Applicant_User_userId,admissionTerm,dateReceived,greScoreVerbal,greScoreQuantitative,greScoreAnalytical,priorWorkExperience,areaOfInterest,priorTranscript,applicationStatus,program,applicationDecision
 "1","20","S2023","2022-06-24 15:33:09","100","140","150","VW, Ford","AI","\N","Incomplete","MSE","\N"
 "2","21","W2024","2022-06-24 15:33:10","110","130","140","Verizon, ATT","Games","\N","Incomplete","MSE","\N"
-"3","22","F2023","2022-06-24 15:33:11","120","120","130","Google", Big Data","\N","Incomplete","MS","\N"
+"3","22","F2023","2022-06-24 15:33:11","120","120","130","Google","Big Data","\N","Incomplete","MS","\N"
 "4","23","S2023","2022-06-24 15:33:12","130","110","120","IBM","\N","\N","Incomplete","MS","\N"
 "5","24","F2023","2022-06-24 15:33:13","140","100","110","Accenture","Block Chain","\N","Incomplete","MSE","\N"

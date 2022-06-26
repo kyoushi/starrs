@@ -1,16 +1,16 @@
 <html>
-    <style>
-        table,
-        th,
-        td {
-            border: 1px solid black;
-        }
-    </style>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
 
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Student Landing Page</h1>
+    <h1>Alumni Landing Page</h1>
     <table>
         <tr>
             <th>Student ID</th>
@@ -45,22 +45,26 @@
         {% endfor %}
     </table>
     <br>
-    <form action="../degreeCourses" method="post">
-        <input type="text" value={{password}} name="studentId" hidden>
-        <input type="submit" value="Select Degree Required Courses" />
-    </form>
-    <form action="../enrollCourses" method="post">
-        <input type="text" value={{password}} name="studentId" hidden>
-        <input type="submit" value="Enroll into Courses" />
-    </form>
-    <form action="../viewGrades" method="post">
-        <input type="text" value={{password}} name="studentId" hidden>
-        <input type="submit" value="View Class List and Grades" />
-    </form>
-    <form action="../applyGraduation" method="post">
-        <input type="text" value={{password}} name="studentId" hidden>
-        <input type="submit" value="Apply for graduation" />
-    </form>
+    <table>
+        <tr>
+            <th>Gradiation Year</th>
+            <th>Degree</th>
+            <th>GPA</th>
+            <th>Action</th>
+        </tr>
+        {% for n in academics %}
+        <tr>
+            <th>{{n[0]}}</th>
+            <th>{{n[2]}}</th>
+            <th>{{n[1]}}</th>
+            <th><form action="../../students/viewGrades" method="post">
+                <input type="text" value={{personalInfo[0][0]}} name="studentId" hidden>
+                <input type="submit" value="View Transcript" />
+            </form></th>
+        </tr>
+        {% endfor %}
+    </table>
+
 </body>
 
 </html>

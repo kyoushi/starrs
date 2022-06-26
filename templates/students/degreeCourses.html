@@ -24,8 +24,8 @@
             <tr>
                 <th>{{n[0]}}</th>
                 <th>{{n[1]}}</th>
-                <th>{{n[2]}}</th>
-                {% if n[3] == None %}
+                <th>{{n[2]}} </th>
+                {% if n[0] in remover %}
                 <th><form action="../students/modifyDegreeCourses"  method="post">
                     <input type="text" value={{studentId}} name="studentId" hidden>
                     <input type="text" value={{n[0]}} name="courseNumber" hidden>

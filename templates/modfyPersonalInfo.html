@@ -1,0 +1,36 @@
+<html>
+<body>
+   <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> | <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+   <h1>Modify</h1>
+   <form action="../../person/updateInfo" method="post">
+      <h3>Personal Information</h3>
+      <p>firstName:</p>
+      <p><input type="text" name="firstName" value="{{personalInfo[0][1]}}" /></p>
+      <p>middleName:</p>
+      <p><input type="text" name="middleName" value="{{personalInfo[0][2]}}" /></p>
+      <p>lastName:</p>
+      <p><input type="text" name="lastName" value="{{personalInfo[0][3]}}" /></p>
+      <p>email:</p>
+      <p><input type="text" name="email" value="{{personalInfo[0][4]}}" /></p>
+      <p>streetAddress:</p>
+      <p><input type="text" name="streetAddress" value="{{personalInfo[0][5]}}" /></p>
+      <p>city:</p>
+      <p><input type="text" name="city" value="{{personalInfo[0][6]}}" /></p>
+      <p>state:</p>
+      <p><input type="text" name="state" value="{{personalInfo[0][7]}}" /></p>
+      <p>zipcode:</p>
+      <p><input type="text" name="zipcode" value="{{personalInfo[0][8]}}" /></p>
+      <p>homePhone:</p>
+      <p><input type="text" name="homePhone" value="{{personalInfo[0][9]}}" /></p>
+      <p>workPhone:</p>
+      <p><input type="text" name="workPhone" value="{{personalInfo[0][10]}}" /></p>
+      <p>mobilePhone:</p>
+      <p><input type="text" name="mobilePhone" value="{{personalInfo[0][11]}}" /></p>
+      <hr>
+      <input type="text" name="userId" value="{{personalInfo[0][0]}}" hidden/>
+      <input type="text" name="previousUrl" value="{{previousUrl}}" hidden/>
+      <p><input type="submit" value="submit" /></p>
+   </form>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 SET GLOBAL local_infile=1;
-USE starss;
+USE starss2;
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/application.csv' 
 INTO TABLE application 
 FIELDS TERMINATED BY ',' 

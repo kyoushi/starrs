@@ -1,48 +1,53 @@
-from mysql.connector import pooling
+from mysql.connector import (connection)
 from datetime import datetime
 from flask import Flask, redirect, url_for, request, render_template
-import atexit
-import requests
+from datetime import date
+# import atexit
 
 app = Flask(__name__)
 
 
-def exit_handler():
-    print("My application is ending!")
-    mydb = dbConnect()
-    if mydb.is_connected():
-        mydb.close()
-        print("MySQL connection is closed")
+# def exit_handler():
+#     print("My application is ending!")
+#     mydb = dbConnect()
+#     if mydb.is_connected():
+#         mydb.close()
+#         print("MySQL connection is closed")
 
 
-atexit.register(exit_handler)
+# atexit.register(exit_handler)
 
 
 def dbConnect():
-    connection_pool = pooling.MySQLConnectionPool(
-        pool_name="pynative_pool",
-        pool_size=5,
-        pool_reset_session=True,
-        host="localhost",
-        database="starss",
-        user="root",
-        password="Limatambo77",
-    )
+    cnx = connection.MySQLConnection(user='root', password='Limatambo77',
+                              host='localhost',
+                              database='starss2')
+    return cnx
 
-    print("Printing connection pool properties ")
-    print("Connection Pool Name - ", connection_pool.pool_name)
-    print("Connection Pool Size - ", connection_pool.pool_size)
+    # connection_pool = pooling.MySQLConnectionPool(
+    #     pool_name="pynative_pool",
+    #     pool_size=32,
+    #     pool_reset_session=True,
+    #     host="localhost",
+    #     database="starss",
+    #     user="root",
+    #     password="Limatambo77",
+    # )
 
-    # Get connection object from a pool
-    connection_object = connection_pool.get_connection()
+    # print("Printing connection pool properties ")
+    # print("Connection Pool Name - ", connection_pool.pool_name)
+    # print("Connection Pool Size - ", connection_pool.pool_size)
 
-    if connection_object.is_connected():
-        db_Info = connection_object.get_server_info()
-        print(
-            "Connected to MySQL database using connection pool ... MySQL Server version on ",
-            db_Info,
-        )
-        return connection_object
+    # # Get connection object from a pool
+    # connection_object = connection_pool.get_connection()
+
+    # if connection_object.is_connected():
+    #     db_Info = connection_object.get_server_info()
+    #     print(
+    #         "Connected to MySQL database using connection pool ... MySQL Server version on ",
+    #         db_Info,
+    #     )
+    #     return connection_object
 
 
 ############################################################################################
@@ -57,6 +62,51 @@ def home():
 
 ############################################################################################
 
+@app.route("/person/modify", methods=["POST"])
+def modifyInfo():
+    userId = request.form["userId"]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT * FROM person  WHERE person.userId=%s;" % userId
+    )
+    personalInfo = mycursor.fetchall()
+    mydb.close()
+
+    previousUrl = request.referrer
+    
+    res = render_template(
+        "modfyPersonalInfo.html", personalInfo=personalInfo, previousUrl=previousUrl
+    )
+
+    return res  
+
+@app.route("/person/updateInfo", methods=["POST"])
+def updateInfo():
+    previousUrl = request.form["previousUrl"]
+    userId = request.form["userId"]
+    firstName = request.form["firstName"]
+    middleName = request.form["middleName"]
+    lastName = request.form["lastName"]
+    email = request.form["email"]
+    streetAddress = request.form["streetAddress"]
+    city = request.form["city"]
+    state = request.form["state"]
+    zipcode = request.form["zipcode"]
+    homePhone = request.form["homePhone"]
+    workPhone = request.form["workPhone"]
+    mobilePhone = request.form["mobilePhone"]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sqlTranscript = "UPDATE person SET firstName = %s, middleName = %s, lastName = %s, email = %s, streetAddress = %s, city = %s, state = %s, zipcode = %s, homePhone = %s, workPhone = %s, mobilePhone = %s WHERE (userId = %s)"
+    valTranscript = (firstName, middleName, lastName, email, streetAddress, city, state, zipcode, homePhone, workPhone, mobilePhone, userId)
+    mycursor.execute(sqlTranscript,valTranscript)
+    mydb.commit()
+    mydb.close()
+
+    return redirect(previousUrl)
 
 @app.route("/prospectiveStudents")
 def prospectiveStudents():
@@ -81,6 +131,7 @@ def prospectiveStudentsApplicationSubmitted(studentID):
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM person WHERE userId =%s" % studentID)
     myresult = mycursor.fetchall()
+    mydb.close()
     firstName = myresult[0][1]
     lastName = myresult[0][3]
 
@@ -100,6 +151,7 @@ def prospectiveStudentsStatus():
         "SELECT User_userId, firstName, lastName, email, password FROM applicant INNER JOIN person ON person.userId = applicant.User_userId;;"
     )
     applicants = mycursor.fetchall()
+    mydb.close()
 
 
     res = render_template("prospectiveStudents/checkApplicantStatus.html", applicants=applicants)
@@ -117,6 +169,7 @@ def prospectiveStudentAccepted():
         % userId
     )
     myresult = mycursor.fetchall()
+    mydb.close()
     status = myresult[0][0]
 
     print(status)
@@ -134,6 +187,7 @@ def acceptAdmission():
     valTranscript = (1,studentID)
     mycursor.execute(sqlTranscript,valTranscript)
     mydb.commit()
+    mydb.close()
 
     return redirect(url_for("home"))
       
@@ -168,9 +222,8 @@ def applicationStatus(password):
         % idApplication
     )
     myresult = mycursor.fetchall()
+    mydb.close()
     transcript = myresult[0][0]
-
-    print(transcript)
 
     statusMessage = ""
 
@@ -202,6 +255,8 @@ def applicationStatus(password):
         )               
     else:
         statusMessage = "Application Complete and Under Review/No Decision Yet"
+
+    mydb.close()
 
     res = render_template(
         "prospectiveStudents/applicationSubmitted.html",
@@ -237,10 +292,17 @@ def studentLogin():
 
 @app.route("/students/student/<password>")
 def student(password):
-    print(password)
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT p.userId, p.firstName, p.middleName, p.lastName , p.homePhone, p.workPhone, p.mobilePhone, p.email, p.streetAddress, p.city, p.state, p.zipcode FROM student s INNER JOIN person p ON s.User_userId = p.userId WHERE s.User_userId =%s;"
+        % password
+    )
+    personalInfo = mycursor.fetchall()
+    mydb.close()
 
     res = render_template(
-        "students/student.html", password=password
+        "students/student.html", personalInfo=personalInfo, password=password
     )
     return res
 
@@ -248,25 +310,65 @@ def student(password):
 def degreeCourses():
     studentId = request.form["studentId"]
 
+
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT c.courseNumber, c.title, c.credits, sc.Student_User_userId FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber INNER JOIN department_has_student ds ON dc.Department_idDepartment=ds.Department_idDepartment LEFT JOIN student_has_course sc ON sc.Course_courseNumber=c.courseNumber WHERE ds.Student_User_userId=%s;" % studentId
+        "SELECT c.courseNumber, c.title, c.credits FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber where dc.Department_idDepartment IN ((SELECT Department_idDepartment FROM department_has_student WHERE Student_User_userId=%s));" % studentId
     )
     degreeCourses = mycursor.fetchall()
+    mydb.close()
 
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT c.courseNumber FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber where dc.Department_idDepartment IN ((SELECT Department_idDepartment FROM department_has_student WHERE Student_User_userId=%s));" % studentId
+    )
+    degreeCoursesRemove = mycursor.fetchall()
+    mydb.close()
+    
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT Course_courseNumber FROM student_has_course WHERE Student_User_userId=%s;" % studentId
+    )
+    studentCourses = mycursor.fetchall()
+    mydb.close()
+
+
+    x = []
+    y = []
+
+    for a in degreeCoursesRemove:
+        x.append(a[0])
+
+    for a in studentCourses:
+            y.append(a[0])    
+    
+
+    for i in range(0, len(x)):
+        for j in range(0, len(y)):
+            if x[i]==y[j]:
+                print('Hola');
+                x[i]='added'
+    
+    mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
         "SELECT SUM(c.credits) FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber WHERE sc.Student_User_userId=%s;" % studentId
     )
     credits = mycursor.fetchall()
+    mydb = dbConnect()
+    mydb.close()
+
     totalCredits = credits[0][0]
 
     if totalCredits is None:
         totalCredits = 0
 
     res = render_template(
-        "students/degreeCourses.html", degreeCourses=degreeCourses, studentId=studentId, totalCredits=totalCredits
+        "students/degreeCourses.html", degreeCourses=degreeCourses, studentId=studentId, totalCredits=totalCredits, remover=x
     )
 
     return res
@@ -300,10 +402,45 @@ def modifyDegreeCourses():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT c.courseNumber, c.title, c.credits, sc.Student_User_userId FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber INNER JOIN department_has_student ds ON dc.Department_idDepartment=ds.Department_idDepartment LEFT JOIN student_has_course sc ON sc.Course_courseNumber=c.courseNumber WHERE ds.Student_User_userId=%s;" % studentId
+        "SELECT c.courseNumber, c.title, c.credits FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber where dc.Department_idDepartment IN ((SELECT Department_idDepartment FROM department_has_student WHERE Student_User_userId=%s));" % studentId
     )
     degreeCourses = mycursor.fetchall()
+    mydb.close()
 
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT c.courseNumber FROM department_has_course dc INNER JOIN course c ON dc.Course_courseNumber=c.courseNumber where dc.Department_idDepartment IN ((SELECT Department_idDepartment FROM department_has_student WHERE Student_User_userId=%s));" % studentId
+    )
+    degreeCoursesRemove = mycursor.fetchall()
+    mydb.close()
+    
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT Course_courseNumber FROM student_has_course WHERE Student_User_userId=%s;" % studentId
+    )
+    studentCourses = mycursor.fetchall()
+    mydb.close()
+
+
+    x = []
+    y = []
+
+    for a in degreeCoursesRemove:
+        x.append(a[0])
+
+    for a in studentCourses:
+            y.append(a[0])    
+    
+
+    for i in range(0, len(x)):
+        for j in range(0, len(y)):
+            if x[i]==y[j]:
+                x[i]='added'
+
+    mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
         "SELECT SUM(c.credits) FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber WHERE sc.Student_User_userId=%s;" % studentId
@@ -315,7 +452,7 @@ def modifyDegreeCourses():
         totalCredits = 0
 
     res = render_template(
-        "students/degreeCourses.html", degreeCourses=degreeCourses, studentId=studentId, totalCredits=totalCredits
+        "students/degreeCourses.html", degreeCourses=degreeCourses, studentId=studentId, totalCredits=totalCredits, remover=x
     )
 
     return res
@@ -324,10 +461,12 @@ def modifyDegreeCourses():
 def enrollCourses():
     studentId = request.form["studentId"]
 
+    print(studentId)
+
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, ss.Student_User_userId, s.Instructor_Staff_Person_userId  FROM starss.student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId LEFT JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber  WHERE sc.Student_User_userId=%s;" % studentId
+        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, sc.Student_User_userId, s.Instructor_Staff_Person_userId  FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId WHERE sc.Student_User_userId=%s;" % studentId
     )
     enrollCourses = mycursor.fetchall()
     mydb.close()
@@ -335,7 +474,38 @@ def enrollCourses():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT SUM(c.credits) FROM starss.student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s;" % studentId
+        "SELECT s.sectionNumber FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId WHERE sc.Student_User_userId=%s;" % studentId
+    )
+    enrollCoursesRemove = mycursor.fetchall()
+    mydb.close()
+
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT Section_sectionNumber FROM student_has_section WHERE student_has_section.Student_User_userId=%s;" % studentId
+    )
+    studentSection = mycursor.fetchall()
+    mydb.close()
+
+    x = []
+    y = []
+
+    for a in enrollCoursesRemove:
+        x.append(a[0])
+
+    for a in studentSection:
+            y.append(a[0])    
+    
+    for i in range(0, len(x)):
+        for j in range(0, len(y)):
+            if x[i]==y[j]:
+                x[i]='added'
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT SUM(c.credits) FROM student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s;" % studentId
     )
     credits = mycursor.fetchall()
     mydb.close()
@@ -346,7 +516,7 @@ def enrollCourses():
 
 
     res = render_template(
-        "students/enrollCourses.html", enrollCourses=enrollCourses, studentId=studentId, totalCredits=totalCredits
+        "students/enrollCourses.html", enrollCourses=enrollCourses, studentId=studentId, totalCredits=totalCredits, remover=x
     )
 
     return res   
@@ -359,17 +529,13 @@ def modifyEnroll():
     instructorId = request.form["instructorId"]
     action = request.form["action"]
 
-    print(studentId)
-    print(courseNumber)
-    print(sectionNumber)
-    print(instructorId)
-    print(action)
-
     if action == 'Register':
         mydb = dbConnect()
         mycursor = mydb.cursor()
         sql = "INSERT INTO student_has_section (Student_User_userId, Section_sectionNumber, Section_Course_courseNumber, Section_Instructor_Staff_Person_userId, grade) VALUES (%s,%s,%s,%s,%s)"
+        print(sql)
         val = (studentId, sectionNumber, courseNumber, instructorId, 'In Progress')
+        print(val)
         mycursor.execute(sql, val)
         mydb.commit()
         mydb.close()
@@ -386,7 +552,7 @@ def modifyEnroll():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, ss.Student_User_userId, s.Instructor_Staff_Person_userId  FROM starss.student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId LEFT JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber  WHERE sc.Student_User_userId=%s;" % studentId
+        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, sc.Student_User_userId, s.Instructor_Staff_Person_userId  FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId WHERE sc.Student_User_userId=%s;" % studentId
     )
     enrollCourses = mycursor.fetchall()
     mydb.close()
@@ -394,17 +560,48 @@ def modifyEnroll():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT SUM(c.credits) FROM starss.student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s;" % studentId
+        "SELECT s.sectionNumber FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId WHERE sc.Student_User_userId=%s;" % studentId
+    )
+    enrollCoursesRemove = mycursor.fetchall()
+    mydb.close()
+
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT Section_sectionNumber FROM student_has_section WHERE student_has_section.Student_User_userId=%s;" % studentId
+    )
+    studentSection = mycursor.fetchall()
+    mydb.close()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT SUM(c.credits) FROM student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s;" % studentId
     )
     credits = mycursor.fetchall()
     mydb.close()
     totalCredits = credits[0][0]
 
+    x = []
+    y = []
+
+    for a in enrollCoursesRemove:
+        x.append(a[0])
+
+    for a in studentSection:
+            y.append(a[0])    
+    
+    for i in range(0, len(x)):
+        for j in range(0, len(y)):
+            if x[i]==y[j]:
+                x[i]='added'
+
     if totalCredits is None:
         totalCredits = 0
 
     res = render_template(
-        "students/enrollCourses.html", enrollCourses=enrollCourses, studentId=studentId, totalCredits=totalCredits
+        "students/enrollCourses.html", enrollCourses=enrollCourses, studentId=studentId, totalCredits=totalCredits, remover=x
     )
 
     return res
@@ -416,7 +613,7 @@ def viewGrades():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, ss.Student_User_userId, s.Instructor_Staff_Person_userId, ss.grade  FROM starss.student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId LEFT JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber  WHERE sc.Student_User_userId=%s;" % studentId
+        "SELECT s.sectionNumber, s.year, s.semester, c.courseNumber, c.title, c.credits, p.firstName, p.lastName, ss.Student_User_userId, s.Instructor_Staff_Person_userId, ss.grade  FROM student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId LEFT JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber  WHERE sc.Student_User_userId=%s;" % studentId
     )
     courses = mycursor.fetchall()
     mydb.close()
@@ -424,7 +621,7 @@ def viewGrades():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT SUM(c.credits) FROM starss.student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
+        "SELECT SUM(c.credits) FROM student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
     )
     credits = mycursor.fetchall()
     mydb.close()
@@ -438,6 +635,68 @@ def viewGrades():
         "students/viewGrades.html", courses=courses, studentId=studentId, totalCredits=totalCredits
     )
 
+    return res    
+
+@app.route("/students/applyGraduation", methods=["POST"])
+def applyGraduation():
+    studentId = request.form["studentId"]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT avg(g.gradeNo) FROM student_has_section ss INNER JOIN gradeconversion g ON ss.grade=g.grade where ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
+    )
+    my_list = mycursor.fetchall()
+    mydb.close()
+
+    gpa=my_list[0][0]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT COUNT(ss.grade) FROM student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s AND ss.grade IN ('C','F');" % studentId
+    )
+    my_list = mycursor.fetchall()
+    mydb.close()
+
+    badGrades = my_list[0][0]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT SUM(c.credits) FROM student_has_section ss INNER JOIN course c ON ss.Section_Course_courseNumber=c.courseNumber WHERE ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
+    )
+    my_list = mycursor.fetchall()
+    mydb.close()
+
+    accumulatedCredits = my_list[0][0]
+
+    message='Graduate Application Denied: '
+    flag=True
+    if (gpa<3.0):
+        flag=False
+        message=message+"| GPA: '%s' less than 3.0 |" % (gpa)
+    if (badGrades>2):
+        flag=False
+        message=message+"| More than '%s' Grades below B, Only 2 allowed |" % (badGrades)
+    if (accumulatedCredits < 30):
+        flag=False
+        message=message+"| Accumulated '%s', at least 30 is required |" % (accumulatedCredits)
+
+    if (flag==True):
+        message="Your are cleared for graduation, you application has been submitted for Approval!"
+        mydb = dbConnect()
+        mycursor = mydb.cursor()
+        sql = "INSERT ignore INTO graduateapplication (status, Student_User_userId) VALUES (%s,%s)"
+        val = ('Cleared', studentId)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        mydb.close()
+
+    res = render_template(
+        "students/graduateApplication.html", message=message
+    )
+
     return res       
 
 ############################################################################################
@@ -445,11 +704,17 @@ def viewGrades():
 
 @app.route("/staff")
 def staff():
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT staff.Person_userId as personId, person.email as email, CASE WHEN instructor.Staff_Person_userId IS NOT NULL THEN 'YES' END as instructor, CASE WHEN advisor.Staff_Person_userId IS NOT NULL THEN 'YES' END as advisor, CASE WHEN reviewer.Staff_Person_userId IS NOT NULL THEN 'YES' END as reviewer, CASE WHEN gs.Staff_Person_userId IS NOT NULL THEN 'YES' END as gs FROM staff INNER JOIN person ON staff.Person_userId=person.userId LEFT JOIN gs ON staff.Person_userId=gs.Staff_Person_userId LEFT JOIN instructor ON staff.Person_userId=instructor.Staff_Person_userId LEFT JOIN advisor ON staff.Person_userId=advisor.Staff_Person_userId LEFT JOIN reviewer ON staff.Person_userId=reviewer.Staff_Person_userId;"
+    )
+    staff = mycursor.fetchall()
+    mydb.close()
+
     res = render_template(
         "staff/staff.html",
-        some="variables",
-        you="want",
-        toPass=["to", "your", "template"],
+        staff=staff
     )
     return res
 
@@ -543,6 +808,12 @@ def formallyAdmitApplicantsForm(id):
     mycursor.execute(sql, val)
     mydb.commit()
 
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO academics (program, Student_User_userId) VALUES (%s,%s)"
+    val = (program, applicationUserId)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
 
     return redirect(
         url_for("formallyAdmitApplicants")
@@ -598,7 +869,7 @@ def reviewApplications():
         "SELECT Applicant_User_userId, idApplication, dateReceived, priorTranscript FROM application WHERE applicationStatus ='Complete'"
     )
     myresult = mycursor.fetchall()
-    print(myresult)    
+    mydb.close()
     return render_template('staff/reviewApplications.html', my_list=myresult)
 
 @app.route("/staff/reviewApplicationForm/<id>")
@@ -652,7 +923,7 @@ def updateApplications():
         "SELECT Applicant_User_userId, idApplication, dateReceived, priorTranscript, applicationStatus FROM application"
     )
     myresult = mycursor.fetchall()
-    print(myresult)    
+    mydb.close() 
     return render_template('staff/gcUpdateApplications.html', my_list=myresult)
 
 @app.route("/staff/gcUpdateApplicationForm/<id>")
@@ -676,6 +947,7 @@ def gcUpdateApplicationForm(id):
         % id
     )
     recommendations = mycursor.fetchall()
+    mydb.close()
 
     return render_template('staff/gcUpdateApplication.html', received=received, recommendations=recommendations, idApplication=id)
 
@@ -699,10 +971,10 @@ def gradeStudent():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT ps.userId, ps.firstName, ps.lastName, s.sectionNumber, s.Course_courseNumber, p.firstName, p.lastName, ss.grade  FROM starss.student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId INNER JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber INNER JOIN person ps ON ps.userId=sc.Student_User_userId WHERE sc.Student_User_userId=%s;" % studentId
+        "SELECT ps.userId, ps.firstName, ps.lastName, ss.Section_sectionNumber, ss.Section_Course_courseNumber, pi.firstName, pi.lastName, ss.grade FROM student_has_section ss INNER JOIN course c INNER JOIN person ps ON ps.userId=ss.Student_User_userId INNER JOIN person pi ON ss.Section_Instructor_Staff_Person_userId=pi.userId where ss.Section_Course_courseNumber=c.courseNumber and ss.Student_User_userId=%s;" % studentId
     )
     courses = mycursor.fetchall()
-    print(courses)    
+   
     return render_template('staff/gradeStudent.html', courses=courses)
 
 @app.route("/staff/grade", methods=["POST"])
@@ -722,25 +994,139 @@ def grade():
     mydb = dbConnect()
     mycursor = mydb.cursor()
     mycursor.execute(
-        "SELECT ps.userId, ps.firstName, ps.lastName, s.sectionNumber, s.Course_courseNumber, p.firstName, p.lastName, ss.grade  FROM starss.student_has_course sc INNER JOIN course c ON sc.Course_courseNumber=c.courseNumber INNER JOIN section s ON c.courseNumber=s.Course_courseNumber INNER JOIN person p ON p.userId=s.Instructor_Staff_Person_userId INNER JOIN student_has_section ss ON ss.Section_sectionNumber=s.sectionNumber INNER JOIN person ps ON ps.userId=sc.Student_User_userId WHERE sc.Student_User_userId=%s;" % studentId
+        "SELECT avg(g.gradeNo) FROM student_has_section ss INNER JOIN gradeconversion g ON ss.grade=g.grade where ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
+    )
+    my_list = mycursor.fetchall()
+    mydb.close()
+
+    gpa=my_list[0][0]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sqlTranscript = "UPDATE academics SET gpa = %s WHERE (Student_User_userId = %s)"
+    valTranscript = (gpa, studentId)
+    mycursor.execute(sqlTranscript,valTranscript)
+    mydb.commit()
+    mydb.close()    
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT ps.userId, ps.firstName, ps.lastName, ss.Section_sectionNumber, ss.Section_Course_courseNumber, pi.firstName, pi.lastName, ss.grade FROM student_has_section ss INNER JOIN course c INNER JOIN person ps ON ps.userId=ss.Student_User_userId INNER JOIN person pi ON ss.Section_Instructor_Staff_Person_userId=pi.userId where ss.Section_Course_courseNumber=c.courseNumber and ss.Student_User_userId=%s;" % studentId
     )
     courses = mycursor.fetchall()
-    print(courses)    
+  
     return render_template('staff/gradeStudent.html', courses=courses)
 
-    return ''
+@app.route("/staff/graduateStudentApplicants")
+def graduateStudentApplicants():
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT ga.Student_User_userId, p.firstName, p.lastName, ds.Department_idDepartment, ga.status FROM graduateapplication ga INNER JOIN person p ON ga.Student_User_userId=p.userId INNER JOIN department_has_student ds ON ga.Student_User_userId=ds.Student_User_userId WHERE ga.status = 'Cleared';"
+    )
+    students = mycursor.fetchall()
+    print(students)    
+    return render_template('staff/graduateStudentApplicants.html', students=students)
 
+@app.route("/staff/approveGraduation", methods=["POST"])
+def approveGraduation():
+    studentId = request.form["studentId"]
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sqlTranscript = "UPDATE graduateapplication SET status = %s, GS_Staff_Person_userId = %s WHERE (Student_User_userId = %s)"
+    valTranscript = ('Graduated', 1, studentId)
+    mycursor.execute(sqlTranscript,valTranscript)
+    mydb.commit()
+    mydb.close()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sqlTranscript = "UPDATE student SET status = %s WHERE (User_userId = %s)"
+    valTranscript = (0, studentId)
+    mycursor.execute(sqlTranscript,valTranscript)
+    mydb.commit()
+    mydb.close()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sqlTranscript = "UPDATE student SET status = %s WHERE (User_userId = %s)"
+    valTranscript = (0, studentId)
+    mycursor.execute(sqlTranscript,valTranscript)
+    mydb.commit()
+    mydb.close()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO alumni (graduationYear, Person_userId) VALUES (%s,%s)"
+    val = (date.today().year, studentId)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO alumni_has_academics (Alumni_Person_userId, academics_Student_User_userId) VALUES (%s,%s)"
+    val = (studentId, studentId)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT ga.Student_User_userId, p.firstName, p.lastName, ds.Department_idDepartment, ga.status FROM graduateapplication ga INNER JOIN person p ON ga.Student_User_userId=p.userId INNER JOIN department_has_student ds ON ga.Student_User_userId=ds.Student_User_userId WHERE ga.status = 'Cleared';"
+    )
+    students = mycursor.fetchall()
+    print(students)    
+    return render_template('staff/graduateStudentApplicants.html', students=students)
 
 ############################################################################################
 
 
 @app.route("/alumni")
 def alumni():
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT p.userId, p.firstName, p.lastName, p.email, p.password FROM alumni a INNER JOIN person p ON a.Person_userId = p.userId;"
+    )
+    activeAlumni = mycursor.fetchall()
+
     res = render_template(
-        "alumni/alumni.html",
-        some="variables",
-        you="want",
-        toPass=["to", "your", "template"],
+        "/alumni/alumni.html",
+        activeAlumni=activeAlumni
+    )
+    return res
+
+@app.route("/alumni/alumniLogin", methods=["POST"])
+def alumniLogin():
+    email = request.form["email"]
+    password = request.form["password"]
+
+    return redirect(url_for("alumnus", password=password))  
+
+@app.route("/alumni/alumni/<password>")
+def alumnus(password):
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT p.userId, p.firstName, p.middleName, p.lastName , p.homePhone, p.workPhone, p.mobilePhone, p.email, p.streetAddress, p.city, p.state, p.zipcode FROM alumni a INNER JOIN person p ON a.Person_userId = p.userId WHERE a.Person_userId =%s;"
+        % password
+    )
+    personalInfo = mycursor.fetchall()
+    mydb.close()
+
+    mydb = dbConnect()
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT a.graduationYear, ac.gpa, d.name FROM alumni a INNER JOIN alumni_has_academics aa ON a.Person_userId=aa.academics_Student_User_userId INNER JOIN academics ac ON aa.academics_Student_User_userId=ac.Student_User_userId INNER JOIN department d ON ac.program=d.idDepartment WHERE a.Person_userId =%s;"
+        % password
+    )
+    academics = mycursor.fetchall()
+    mydb.close()
+
+    res = render_template(
+        "alumni/alumnus.html", personalInfo=personalInfo, academics=academics
     )
     return res
 
@@ -820,6 +1206,7 @@ def reviewerReviewApplication():
     mycursor.execute(sql, val)
     userID = mycursor.lastrowid
     mydb.commit()
+    mydb.close()
 
     return redirect(
         url_for("reviewApplications")
@@ -912,6 +1299,8 @@ def gcUpdateApplication():
         valTranscript = ('Incomplete', idApplication)
         mycursor.execute(sqlTranscript,valTranscript)
         mydb.commit()
+
+    mydb.close()
 
     return redirect(
         url_for("updateApplications")
@@ -1080,6 +1469,7 @@ def studentApplyAPI():
         )
         mycursor.execute(sql, val)
         mydb.commit()
+        mydb.close()
 
     
 
@@ -1089,7 +1479,6 @@ def studentApplyAPI():
     valTranscript = ('Incomplete', applicationID)
     mycursor.execute(sqlTranscript,valTranscript)
     mydb.commit()
-
     mydb.close()
 
     return redirect(

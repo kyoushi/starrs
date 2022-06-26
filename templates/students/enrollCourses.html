@@ -33,7 +33,7 @@
                 <th>{{n[4]}}</th>
                 <th>{{n[5]}}</th>
                 <th>{{n[6]}} {{n[7]}}</th>
-                {% if n[8] == None %}
+                {% if n[0] in remover %}
                 <th><form action="../../students/modifyEnroll"  method="post">
                     <input type="text" value={{studentId}} name="studentId" hidden>
                     <input type="text" value={{n[3]}} name="courseNumber" hidden>

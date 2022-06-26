@@ -1,5 +1,5 @@
 SET GLOBAL local_infile=1;
-USE starss;
+USE starss2;
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/department.csv' 
 INTO TABLE department 
 FIELDS TERMINATED BY ',' 
@@ -21,6 +21,12 @@ LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/section.csv' 
 INTO TABLE section 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 ROWS;
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/gradeConversion.csv' 
+INTO TABLE gradeConversion 
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n'
