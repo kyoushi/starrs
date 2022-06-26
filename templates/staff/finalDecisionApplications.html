@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <style>
-        table, th, td {
-          border: 1px solid black;
-        }
-        </style>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
     <h1>Applications - Final Decision</h1>
     <div class="container">
-         <table>
+        <table>
             <tr>
                 <th>User ID</th>
                 <th>Application ID</th>
                 <th>Date Received</th>
                 <th>Transcript Received</th>
                 <th>Action</th>
-              </tr>
+            </tr>
             {% for n in application %}
             <tr>
                 <th>{{n[0]}}</th>
@@ -28,7 +31,13 @@
                 {% else %}
                 <th>Not Received</th>
                 {% endif %}
-                <th><a href="/staff/finalDecisionForm/{{n[1]}}">Final Review</a></th>
+                <th>
+                    <form action="../staff/viewApplication" method="post">
+                        <input type="text" value={{n[0]}} name="studentId" hidden>
+                        <input type="submit" value="View Application" />
+                    </form>
+                    <a href="/staff/finalDecisionForm/{{n[1]}}">Final Review</a>
+                </th>
             </tr>
 
             {% endfor %}

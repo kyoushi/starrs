@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+    <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+    <h1>Admitted Applicants</h1>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Average GRE</th>
+                <th>Reject Count</th>
+                <th>Admit Count</th>
+                <th>{{column}}</th>
+            </tr>
+            <tr>
+                <th>{{gre}}</th>
+                <th>{{rejectCount}}</th>
+                <th>{{admitCount}}</th>
+                <th>{{filter}}</th>
+            </tr>
+        </table>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

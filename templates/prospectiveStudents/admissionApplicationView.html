@@ -1,0 +1,85 @@
+<html>
+
+<body>
+   <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
+   <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
+   <h1>Student Application</h1>
+      <h3>Personal Information</h3>
+      <p>firstName:</p>
+      <p><input type="text" name="firstName" value="{{personalInfo[1]}}" readonly /></p>
+      <p>middleName:</p>
+      <p><input type="text" name="middleName" value="{{personalInfo[2]}}" readonly /></p>
+      <p>lastName:</p>
+      <p><input type="text" name="lastName"value="{{personalInfo[3]}}" readonly /></p>
+      <p>email:</p>
+      <p><input type="text" name="email "value="{{personalInfo[4]}}" readonly /></p>
+      <p>streetAddress:</p>
+      <p><input type="text" name="streetAddress" value="{{personalInfo[5]}}" readonly /></p>
+      <p>city:</p>
+      <p><input type="text" name="city" value="{{personalInfo[6]}}" readonly /></p>
+      <p>state:</p>
+      <p><input type="text" name="state" value="{{personalInfo[7]}}" readonly /></p>
+      <p>zipcode:</p>
+      <p><input type="text" name="zipcode" value="{{personalInfo[8]}}" readonly /></p>
+      <p>homePhone:</p>
+      <p><input type="text" name="homePhone" value="{{personalInfo[9]}}" readonly /></p>
+      <p>workPhone:</p>
+      <p><input type="text" name="workPhone" value="{{personalInfo[10]}}" readonly /></p>
+      <p>mobilePhone:</p>
+      <p><input type="text" name="mobilePhone" value="{{personalInfo[11]}}" readonly /></p>
+      <hr>
+      <h3>Academic Information</h3>
+      <p>Program:</p>
+      <p><input type="text" name="program" value="{{application[11]}}" readonly /></p>
+      <hr>
+      <p>GRE Verbal:</p>
+      <p><input type="text" name="greScoreVerbal" value="{{application[4]}}" readonly /></p>
+      <p>GRE Analytical :</p>
+      <p><input type="text" name="greScoreAnalytical" value="{{application[6]}}" readonly /></p>
+      <p>GRE Quantitative:</p>
+      <p><input type="text" name="greScoreQuantitative" value="{{application[5]}}" readonly /></p>
+      <p>Prior Work Experience:</p>
+      <p><textarea name="priorWorkExperience" rows="2" cols="50" placeholder="{{application[7]}}" readonly></textarea></p>
+      <p>Admission Term:</p>
+      <p><input type="text" name="admissionTerm" value="{{application[2]}}" readonly /></p>
+      <p>Area of Interest:</p>
+      <p><input type="text" name="areaOfInterest" value="{{application[8]}}" readonly /></p>
+      <hr>
+      <h3>Prior Degrees</h3>
+      <h4>Prior Bachellor Degree</h4>
+      <p>graduationYear:</p>
+      <p><input type="text" name="graduationYear1" readonly /></p>
+      <p>gpa:</p>
+      <p><input type="text" name="gpa1" /></p>
+      <p>collegeName:</p>
+      <p><input type="text" name="collegeName1" /></p>
+      </p>
+      <hr>
+      <h4>Prior Masters Degree</h4>
+      <p>graduationYear:</p>
+      <p><input type="text" name="graduationYear2" readonly /></p>
+      <p>gpa:</p>
+      <p><input type="text" name="gpa2" readonly /></p>
+      <p>collegeName:</p>
+      <p><input type="text" name="collegeName2" readonly /></p>
+      </p>
+      <hr>
+      <h3>Recommendation Letters</h3>
+      {% for n in recommendations %}
+      <tr>
+         <h4>Recommendation Letter {{loop.index}}</h4>
+         <p>Title:</p>
+         <p><input type="text" name="title3" value="{{n[4]}}" readonly /></p>
+         <p>name:</p>
+         <p><input type="text" name="name3" value="{{n[1]}}" /></p>
+         <p>email:</p>
+         <p><input type="text" name="email3" value="{{n[3]}}" /></p>
+         <p>Affiliation:</p>
+         <p><input type="text" name="affiliation3" value="{{n[2]}}" readonly /></p>
+         <hr>
+      </tr>
+      {% endfor %}
+      <hr>
+</body>
+
+</html>

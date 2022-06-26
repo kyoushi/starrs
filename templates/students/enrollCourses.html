@@ -11,7 +11,7 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>Enroll - Courses</h1>
+    <h1>Enroll - Courses</h1><a href={{previousUrl}}>Back</a>
     <div class="container">
         <table>
             <tr>
@@ -39,7 +39,10 @@
                     <input type="text" value={{n[3]}} name="courseNumber" hidden>
                     <input type="text" value={{n[0]}} name="sectionNumber" hidden>
                     <input type="text" value={{n[9]}} name="instructorId" hidden>
+                    <input type="text" value={{n[1]}} name="year" hidden>
+                    <input type="text" value={{n[2]}} name="semester" hidden>
                     <input type="text" value="Register" name="action" hidden>
+                    <input type="text" value="{{previousUrl}}" name="previousUrl" hidden>
                     <input type="submit" value="Register" />
                 </form></th>
                 {% else %}
@@ -48,7 +51,10 @@
                     <input type="text" value={{n[3]}} name="courseNumber" hidden>
                     <input type="text" value={{n[0]}} name="sectionNumber" hidden>
                     <input type="text" value={{n[9]}} name="instructorId" hidden>
+                    <input type="text" value={{n[1]}} name="year" hidden>
+                    <input type="text" value={{n[2]}} name="semester" hidden>
                     <input type="text" value="Drop" name="action" hidden>
+                    <input type="text" value="{{previousUrl}}" name="previousUrl" hidden>
                     <input type="submit" value="Drop" />
                 </form></th>
                 {% endif %} 

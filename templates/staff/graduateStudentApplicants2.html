@@ -11,34 +11,26 @@
 <body>
     <a href="/">Home</a> | <a href="/prospectiveStudents">Prospective Students</a> | <a href="/students">Students</a> |
     <a href="/staff">Staff</a> | <a href="/alumni">Alumni</a>
-    <h1>View Grades - Student ID: {{studentId}}</h1><a href={{previousUrl}}>Back</a>
+    <h1>Graduate Student Applicants</h1>
     <div class="container">
         <table>
             <tr>
-                <th>Section Number</th>
-                <th>Year</th>
-                <th>Semester</th>
-                <th>Course Number</th>
-                <th>Title</th>
-                <th>Credits</th>
-                <th>Instructor</th>
-                <th>Grade</th>
-              </tr>
-            {% for n in courses %}
+                <th>Student Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Program</th>
+                <th>Status</th>
+            </tr>
+            {% for n in students %}
             <tr>
                 <th>{{n[0]}}</th>
                 <th>{{n[1]}}</th>
                 <th>{{n[2]}}</th>
                 <th>{{n[3]}}</th>
                 <th>{{n[4]}}</th>
-                <th>{{n[5]}}</th>
-                <th>{{n[6]}} {{n[7]}}</th>
-                <th>{{n[10]}}</th>
             </tr>
             {% endfor %}
         </table>
-        <br>
-        <p>You have accumulated {{totalCredits}}/30 Credits</p>
     </div>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
