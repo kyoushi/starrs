@@ -669,18 +669,18 @@ def viewGrades():
 def applyGraduation():
     studentId = request.form["studentId"]
 
-    mydb = dbConnect()
-    mycursor = mydb.cursor()
-    mycursor.execute(
-        "SELECT avg(g.gradeNo) FROM section_has_student ss INNER JOIN gradeconversion g ON ss.grade=g.grade where ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
-    )
-    my_list = mycursor.fetchall()
-    mydb.close()
+    # mydb = dbConnect()
+    # mycursor = mydb.cursor()
+    # mycursor.execute(
+    #     "SELECT avg(g.gradeNo) FROM section_has_student ss INNER JOIN gradeconversion g ON ss.grade=g.grade where ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
+    # )
+    # my_list = mycursor.fetchall()
+    # mydb.close()
 
-    message='Graduate Application Denied: '
+    # message='Graduate Application Denied: '
 
-    if my_list[0][0] != None:
-        mydb = dbConnect()
+    # if my_list[0][0] != None:
+    #     mydb = dbConnect()
         mycursor = mydb.cursor()
         mycursor.execute(
             "SELECT avg(g.gradeNo) FROM section_has_student ss INNER JOIN gradeconversion g ON ss.grade=g.grade where ss.Student_User_userId=%s AND ss.grade <> 'In Progress';" % studentId
@@ -753,17 +753,17 @@ def applyGraduation():
             mydb.commit()
             mydb.close()
 
-    else:
-        message=message+"You are not enrolled into courses or you are not graded yet"
-        print('A')
-        mydb = dbConnect()
-        mycursor = mydb.cursor()
-        sql = "INSERT ignore INTO graduateapplication (status, Student_User_userId) VALUES (%s,%s)"
-        val = ('Not Cleared', studentId)
-        mycursor.execute(sql, val)
-        mydb.commit()
-        mydb.close()
-        print('B')
+    # else:
+    #     message=message+"You are not enrolled into courses or you are not graded yet"
+    #     print('A')
+    #     mydb = dbConnect()
+    #     mycursor = mydb.cursor()
+    #     sql = "INSERT ignore INTO graduateapplication (status, Student_User_userId) VALUES (%s,%s)"
+    #     val = ('Not Cleared', studentId)
+    #     mycursor.execute(sql, val)
+    #     mydb.commit()
+    #     mydb.close()
+    #     print('B')
 
     res = render_template(
          "students/graduateApplication.html", message=message
